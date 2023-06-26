@@ -26,6 +26,7 @@ EXPOSE 8080
 ENTRYPOINT node /usr/src/app/server.js
 
 
+
 # docker build . -t clemFormation/api-liveaddict
 # docker image rm api-liveaddict-node -f && docker build -f Dockerfile -t clem-formation/api-liveaddict --rm --force-rm .
 # docker run -it --entrypoint /bin/bash clem-formation/api-liveaddict:latest
