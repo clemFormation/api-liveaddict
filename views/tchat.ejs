@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <%- include ('includes/head.ejs') %>
+        <title>Socket.io</title>
+        <style>
+            body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+            #fTchat { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+            #fTchat > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+            
+            #txtChat { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; 
+                width: 100%;}
+            #txtChat:focus { outline: none; }
+
+            #messages { list-style-type: none; margin: 0; padding: 0; }
+            #messages > li { padding: 0.5rem 1rem; }
+            #messages > li:nth-child(odd) { background: #efefef; }
+            .pseudo{font-weight: bold;}
+            .message{font-size: 1.1em;}
+            .timeZone{    float: right;}
+            .auteur{color:red}
+            .serverMsg{ font-style: italic;font-size: 0.8em;}
+        </style>
+    </head>
+    <body>
+        <%- include ('includes/header.ejs') %>
+        <h1>Communication avec socket.io !</h1> 
+        <p id="welcome"></p>
+        <ul id="messages"></ul>
+        <form id="fTchat">
+            <input type="text" id="txtChat" />
+            <button id="btnSend">Envoyer</button>
+        </form>
+
+        <script src="/socket.io/socket.io.js"></script>
+        
+        
+        <script>
+            const txtChat = document.querySelector('#txtChat');
+            const messages = document.querySelector('#messages');
+            const socket = io.connect(`http://localhost:8080`);
+            let myPseudo= "anonymous"
+
+            socket.on('SYSTEME_MSG', function(msg) {
+                console.info('SERVEUR: ' + msg);
+                myPseudo = prompt('Entrez votre pseudo')
+                welcome.innerHTML = `Bienvenue ${myPseudo}`;
+                socket.emit('CHAT_CMD', {
+                    pseudo : myPseudo
+                });
+            });
+            
+            socket.on('CHAT_MSG',(msgs)=>{
+                if (!Array.isArray(msgs)) msgs = [msgs];
+                msgs.forEach((msg) => {
+                    msg.time = new Date(msg.time);
+                    messages.innerHTML += `<li ${msg.pseudo == "SERVER" ? ' class="serverMsg" ' : ""}>
+                        <span class='pseudo ${msg.pseudo == myPseudo ? "auteur" : ""}'>${msg.pseudo}</span>:
+                        <span class='message'>${msg.content}</span>
+                        <span class='timeZone'>${addZero(msg.time.getHours())}:${addZero(msg.time.getMinutes())}:${addZero(msg.time.getSeconds())}</span>
+                    </li>`;
+                });
+                window.scrollTo(0, document.body.scrollHeight);
+            })
+            
+            function addZero(txt, strLength = 2) {
+                return ("000000" + txt).slice(-strLength);
+            }
+            document.querySelector('#fTchat').addEventListener('submit',(e)=>{
+                e.preventDefault();
+                socket.emit('CHAT_MSG', txtChat.value);
+                txtChat.value = '';
+            })
+        </script>
+        <%- include ('includes/footer.ejs') %>
+    </body>
+</html>
