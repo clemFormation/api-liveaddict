@@ -52,7 +52,7 @@ services:
     networks:
       db:
 
-#to run : docker compose -f docker-compose.yml --project-name api-liveaddict up --build
+# docker compose -f docker-compose.yml  --project-name api-liveaddict up -d --remove-orphans --force-recreate
 #to run : docker-compose --project-name liveaddict_bdd up -d --remove-orphans
 #to run : docker-compose start/stop 
 # redémarrage du service : Net stop com.docker.service / Net start com.docker.service

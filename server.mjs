@@ -1,11 +1,10 @@
 import express from 'express';
 import { createServer } from "http";
+import 'dotenv/config'
 
-import staticRoutes from './routes/static/staticRoute.js';
-import sessionRoutes from './routes/authentification/index.js';
-import tchatSocketio from './routes/tchatSocketio/index.js';
 //import { TransformQuery } from 'graphql-tools';
- 
+
+// crationd u serveur express
 const app = express();
 const httpServer = createServer(app);
 process.env.PORT = process.env.PORT || 8080
@@ -15,16 +14,17 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 
 // permet de tracer toutes les requettes HTTP
-app
-.use((req,res,next)=>{
+app.use((req,res,next)=>{
     console.debug(`URL demandée : ${req.originalUrl}`)
     next();
 })
 // Fichier static 
-app.use(express.static('public'))
+app.use(express.static('public'));
+
 
 // Définition de la route client sur le serveur
-.use(sessionRoutes);
+import sessionRoutes from './routes/authentification/index.js';
+app.use(sessionRoutes);
 
 app.use((req, res, next)=>{
     //acces restreint
@@ -35,15 +35,26 @@ app.use((req, res, next)=>{
 })
 
 // Définition de la route client sur le serveur
-.use(staticRoutes)
+import staticRoutes from './routes/static/staticRoute.js';
+app.use(staticRoutes);
 
 // partie chat/socket.io
-.use("/socketio/",tchatSocketio(httpServer))
-    
+import tchatSocketio from './routes/tchatSocketio/index.js';
+app.use("/socketio/",tchatSocketio(httpServer));
+
+// API Rest
+import REST from './routes/api/rest.js';
+app.use("/api/rest/v1/",REST)
+
+// API GraphQL
+import graphQL from './routes/api/graphQL.js';
+app.use("/api/graphql/v1/",graphQL)
+
 
 // 404
 app.use(function(req, res){
     res.render('404');
 });
 
+// lancement du serveur
 httpServer.listen(process.env.PORT, () => console.log(`serveur lancé sur http://localhost:${process.env.PORT}`));
