@@ -1,6 +1,9 @@
+console.log(`Process = .env.${process.env.NODE_ENV}`);
+import 'dotenv/config'
+
 import express from 'express';
 import { createServer } from "http";
-import 'dotenv/config'
+
 
 //import { TransformQuery } from 'graphql-tools';
 

@@ -20,10 +20,13 @@ services:
       - DATABASE_CONNECTIONSTRING=mongodb://mongo:27017/notes
     volumes:
       - .:/code
+    depends_on:
+      - mariadb
     networks:
       db:
     
   mariadb:
+    container_name: db
     image: mariadb
     restart: always
     environment:
