@@ -5,22 +5,31 @@ import models from '#root/lib/DAL/index.js';
 
 const router = new Router();
 
-router.use((req,res) =>{
-  res.headers.push({
-    "Access-Control-Allow-Origin" : "*",
-  })
-})
-
 // génération automatic de tous les models en schema graphQL
 import graphMod from 'graphcraft' //https://github.com/almost-full-stack/graphcraft
 
 const options = {
-  //exclude: ["Users"]
+  exclude: [],
+  debug: true,
+  dataloader: true,
+  nestedMutations: true,
+  findOneQueries: true,
 }
-const {generateModelTypes, generateSchema} = graphMod(options);
+// bug des permissions qui ne sont pas ou mal initialiée
+const rules = {create : []}
+Object.keys( models).forEach( m =>{
+  rules.create.push({model: m})
+})
+options.permissions = () => {
+  return Promise.resolve({
+    rules
+  });
+}
+
+const { generateSchema} = graphMod(options);
 const schema = await generateSchema(models) // Generates the schema, return promise.
 
-router.use('/', graphqlHTTP({
+router.use('/', graphqlHTTP({  
     schema: new GraphQLSchema(schema),
     graphiql: true
 }))
