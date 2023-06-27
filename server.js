@@ -2,12 +2,10 @@ console.log(`Process = .env.${process.env.NODE_ENV}`);
 import 'dotenv/config'
 
 import express from 'express';
+
 import { createServer } from "http";
 
-
-//import { TransformQuery } from 'graphql-tools';
-
-// crationd u serveur express
+// création du serveur express
 const app = express();
 const httpServer = createServer(app);
 process.env.PORT = process.env.PORT || 8080
@@ -21,6 +19,10 @@ app.use((req,res,next)=>{
     console.debug(`URL demandée : ${req.originalUrl}`)
     next();
 })
+// enalbe Cors
+import cors from 'cors';
+app.use(cors())
+
 // Fichier static 
 app.use(express.static('public'));
 

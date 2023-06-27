@@ -5,6 +5,11 @@ import models from '#root/lib/DAL/index.js';
 
 const router = new Router();
 
+router.use((req,res) =>{
+  res.headers.push({
+    "Access-Control-Allow-Origin" : "*",
+  })
+})
 
 // génération automatic de tous les models en schema graphQL
 import graphMod from 'graphcraft' //https://github.com/almost-full-stack/graphcraft

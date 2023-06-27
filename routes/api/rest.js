@@ -15,9 +15,9 @@ router
         response.error = `L'élément '${req.params.elmt}' n'existe pas`;
     }
     const options={
-        where : {}
     }
     if(!models[req.params.id] ) {
+        options.where = {}
         options.where[`id${req.params.elmt}`] = req.params.id
     }
     response.data = await models[req.params.elmt].findAll(options)
