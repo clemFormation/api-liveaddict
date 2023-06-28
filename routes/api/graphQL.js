@@ -2,11 +2,55 @@ import {Router} from 'express';
 import { GraphQLSchema } from 'graphql';
 import {graphqlHTTP} from 'express-graphql';
 import models from '#root/lib/DAL/index.js';
+/*
 
+
+#insert style
+mutation  {   
+  StyleCreate(    
+    Style: {	  	
+      libelle:"test",  	  
+      description: "description chouette"		
+    })
+  {    idStyle,libelle  }
+}
+#select Style
+#{  Style{    idStyle,libelle  }}
+
+#insert visiteur
+mutation  {   
+  VisiteurCreate(    
+    Visiteur: {	  	
+      nom:"aubert",  	  
+      prenom:"clément",  	  
+      photo: "test"		
+    })
+  {    idVisiteur,photo  }
+}
+#insert visiteur
+mutation  {   
+  VisiteurUpdate(    
+    Visiteur: {	  	
+ 			idVisiteur:1001,
+      prenom:"clément2",  	  
+      photo: "test"		
+    })
+  {    idVisiteur,photo  }
+}
+# selecft visiteur
+123256595
+123256590
+query {
+  Visiteur(where:{idVisiteur:123256595}){
+    idVisiteur, nom, prenom, photo
+  }
+}
+
+*/
 const router = new Router();
 
 // génération automatic de tous les models en schema graphQL
-import graphMod from 'graphcraft' //https://github.com/almost-full-stack/graphcraft
+import graphMod from '#lib/graphcraft/src/index.js' //https://github.com/almost-full-stack/graphcraft
 
 const options = {
   exclude: [],
@@ -16,15 +60,26 @@ const options = {
   findOneQueries: true,
 }
 // bug des permissions qui ne sont pas ou mal initialiée
-const rules = {create : []}
+const rules = {
+  create : [],
+  update : [],
+  restore : [],
+  destroy : [],
+  fetch:[],
+}
 Object.keys( models).forEach( m =>{
   rules.create.push({model: m})
+  rules.update.push({model: m})
+  rules.restore.push({model: m})
+  rules.destroy.push({model: m})
+  rules.fetch.push({model: m})
 })
 options.permissions = () => {
   return Promise.resolve({
     rules
   });
 }
+//
 
 const { generateSchema} = graphMod(options);
 const schema = await generateSchema(models) // Generates the schema, return promise.
@@ -34,81 +89,5 @@ router.use('/', graphqlHTTP({
     graphiql: true
 }))
 
-/*
-const { graphqlHTTP } = require('express-graphql');
-const { makeExecutableSchema } = require('graphql-tools');
-
-// description du schéma
-//const typeDefs = buildSchema(`
-const typeDefs =`
-  type Author {
-    id: Int!
-    firstName: String
-    lastName: String
-    """
-    the list of Posts by this author
-    """
-    posts: [Post]
-  }
-
-  type Post {
-    id: Int!
-    title: String
-    author: Author
-    votes: Int
-  }
-
-  # the schema allows the following query:
-  type Query {
-    posts: [Post]
-    author(id: Int!): Author
-  }
-
-  # this schema allows the following mutation:
-  type Mutation {
-    upvotePost (
-      postId: Int!
-    ): Post
-  }
-`;
- 
-
-const resolvers = {
-  Query: {
-    posts: () => posts,
-    author: (_, { id }) => authors.find(e => e.id == id ),
-  },
-
-  Mutation: {
-    upvotePost: (_, { postId }) => {
-      const post = posts.find( e => e.id == postId );
-      if (!post) {
-        throw new Error(`Couldn't find post with id ${postId}`);
-      }
-      post.votes += 1;
-      return post;
-    },
-  },
-
-  Author: {
-    posts: author => posts.filter(e => e.authorId == author.id ),
-  },
-
-  Post: {
-    author: post => authors.find(e => e.id == post.authorId ),
-  },
-};
-
-
-router.use('/', graphqlHTTP({
-  schema: makeExecutableSchema({
-    typeDefs,
-    resolvers,
-  }),
-  //rootValue: root,
-  graphiql: true,
-})
-)
-*/
 export default router;
 

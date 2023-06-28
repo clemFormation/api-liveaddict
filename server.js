@@ -1,5 +1,5 @@
-console.log(`Process = .env.${process.env.NODE_ENV}`);
 import 'dotenv/config'
+console.log(`Process = .env.${process.env.NODE_ENV}`);
 
 import express from 'express';
 

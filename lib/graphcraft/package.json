@@ -1,0 +1,87 @@
+{
+  "name": "graphcraft",
+  "version": "1.1.3",
+  "description": "Rapildy build and extend GraphQL API based on Sequelize models. This library helps you focus on business logic while taking care of GraphQL schema automatically.",
+  "main": "src/index.js",
+  "scripts": {
+    "publish-beta": "npm run lint && npm publish --tag beta",
+    "publish-prod": "npm publish",
+    "check": "npm run lint && npm run test",
+    "format": "prettier-eslint --write \"src/*.js\"",
+    "jest": "jest",
+    "jest-coverage": "npm run jest -- --coverage",
+    "lint": "eslint src --cache",
+    "test": "npm run test-db-reset && npm run jest",
+    "test-db-reset": "rm -rf tests/database.db && node tests/reset-db.js"
+  },
+  "files": [
+    "/src",
+    "package.json",
+    "README"
+  ],
+  "publishConfig": {
+    "cache": "cache/.npm",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/almost-full-stack/graphcraft"
+  },
+  "keywords": [
+    "graphql",
+    "sequelize"
+  ],
+  "author": "Ali Rizwan <ali.aruz@outlook.com>",
+  "contributors": [
+    {
+      "name": "Ali Rizwan",
+      "email": "ali.aruz@outlook.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/almost-full-stack/graphcraft/issues"
+  },
+  "homepage": "https://github.com/almost-full-stack/graphcraft#readme",
+  "dependencies": {
+    "camelcase": "^5.3.1",
+    "cls-hooked": "^4.2.2",
+    "dataloader-sequelize": "^2.3.3",
+    "graphql-relay": "^0.6.0",
+    "graphql-sequelize": "^9.5.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^22.0.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "prettier-eslint-cli": "^5.0.1",
+    "jest": "^27.5.1",
+    "jest-cli": "^27.5.1",
+    "express": "^4.16.4",
+    "express-graphql": "^0.7.1",
+    "graphql": "^14.5.4",
+    "husky": "^1.1.4",
+    "sequelize": "^6.2.2",
+    "sequelize-cli": "^6.1.0",
+    "sqlite3": "^5.0.2",
+    "stringifier": "^2.0.0",
+    "supertest": "^6.0.1"
+  },
+  "peerDependencies": {
+    "graphql": "^15.1.0",
+    "sequelize": "^6.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true
+  },
+  "husky": {
+    "hooks": {
+    }
+  }
+}

@@ -7,6 +7,9 @@
   "imports": {
     "#root/*": {
       "default": "./*"
+    },
+    "#lib/*": {
+      "default": "./lib/*"
     }
   },
   "scripts": {
